@@ -1,9 +1,12 @@
 import React from 'react'
-import { useDispatch } from 'react-redux'
-import { Link } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { Link, useLocation } from 'react-router-dom'
 import { deleteProjectTask } from '../../actions/backlogActions'
 
 function ProjectTask(props) {
+  const { user } = useSelector((state) => state.user)
+  const location = useLocation()
+  const { isAdmin } = user
   const { project_task } = props
   let priorityString = 'LOW'
   let priorityClass = 'bg-info text-light'
@@ -18,7 +21,7 @@ function ProjectTask(props) {
   }
 
   const onDeleteClick = (backlog_id, pt_id) => {
-    dispatch(deleteProjectTask(backlog_id, pt_id))
+    dispatch(deleteProjectTask(backlog_id, pt_id, isAdmin))
   }
 
   return (
@@ -32,8 +35,8 @@ function ProjectTask(props) {
           {project_task.acceptanceCriteria}
         </p>
         <Link
-          to={`/updateProjectTask/${project_task.projectIdentifier}/${project_task.projectSequence}`}
-          className='btn btn-primary'
+          to={`/updateProjectTask/${project_task.projectIdentifier}/${project_task.projectSequence}?redirect=${location.pathname}${location.search}`}
+          className='btn btn-primary me-4'
         >
           View / Update
         </Link>

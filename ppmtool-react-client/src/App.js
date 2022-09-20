@@ -18,6 +18,9 @@ import setJWTToken from './helpers/setJWTToken'
 import { SET_CURRENT_USER } from './actions/types'
 import { logout } from './actions/userActions'
 import SecureRoute from './helpers/SecureRoute'
+import AdminUserBoard from './screens/Admin/AdminUserBoard'
+import EditUser from './screens/Admin/EditUser'
+import ViewProjects from './screens/Admin/ViewProjects'
 const jwtToken = localStorage.jwtToken
 
 if (jwtToken) {
@@ -79,6 +82,43 @@ function App() {
             path='/updateProjectTask/:backlog_id/:sequence_id'
             element={
               <SecureRoute user={user} securedRoute={<UpdateProjectTask />} />
+            }
+          />
+
+          {/*Admin*/}
+          <Route
+            exact
+            path='/admin/users'
+            element={
+              <SecureRoute
+                user={user}
+                securedRoute={<AdminUserBoard />}
+                adminRequired={true}
+              />
+            }
+          />
+
+          <Route
+            exact
+            path='/admin/user/:id'
+            element={
+              <SecureRoute
+                user={user}
+                securedRoute={<EditUser />}
+                adminRequired={true}
+              />
+            }
+          />
+
+          <Route
+            exact
+            path='/admin/projects'
+            element={
+              <SecureRoute
+                user={user}
+                securedRoute={<ViewProjects />}
+                adminRequired={true}
+              />
             }
           />
         </Routes>

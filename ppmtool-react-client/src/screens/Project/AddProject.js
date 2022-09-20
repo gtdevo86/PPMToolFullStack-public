@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { createProject } from '../../actions/projectActions'
 import classNames from 'classnames'
 import { RESET_ERRORS } from '../../actions/types'
+import Message from '../../components/Layout/Message'
 
 function AddProject() {
   const [projectName, setProjectName] = useState('')
@@ -12,6 +13,7 @@ function AddProject() {
   const [start_date, setStart_date] = useState('')
   const [end_date, setEnd_date] = useState('')
   const errors = useSelector((state) => state.errors)
+  const { loading } = useSelector((state) => state.loading)
   let navigate = useNavigate()
   const dispatch = useDispatch()
 
@@ -28,7 +30,7 @@ function AddProject() {
       start_date: start_date,
       end_date: end_date,
     }
-    dispatch(createProject(newProject, navigate))
+    dispatch(createProject(newProject, false, navigate, '/dashboard'))
   }
 
   return (
@@ -39,6 +41,12 @@ function AddProject() {
             <div className='col-md-8 m-auto'>
               <h5 className='display-4 text-center'>Create Project form</h5>
               <hr />
+              {errors.message && (
+                <Message variant='danger'>{errors.message}</Message>
+              )}
+              {errors.projectIdentifer && (
+                <Message variant='danger'>{errors.projectIdentifer}</Message>
+              )}
               <form onSubmit={onSubmit}>
                 <div className='form-group'>
                   <input
@@ -110,7 +118,15 @@ function AddProject() {
                     onChange={(e) => setEnd_date(e.target.value)}
                   />
                 </div>
-                <input type='submit' className='btn btn-primary btn-block mt-4' />
+                <button
+                  disabled={loading}
+                  className='btn btn-primary btn-block mt-4'
+                >
+                  {loading && (
+                    <span className='spinner-border spinner-border-sm mr-1'></span>
+                  )}
+                  Submit
+                </button>
               </form>
             </div>
           </div>

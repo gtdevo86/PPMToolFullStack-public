@@ -5,6 +5,7 @@ import classNames from 'classnames'
 import { addProjectTask } from '../../actions/backlogActions'
 import { RESET_ERRORS } from '../../actions/types'
 import { getProject } from '../../actions/projectActions'
+import Message from '../../components/Layout/Message'
 
 function AddProjectTask() {
   const params = useParams()
@@ -17,14 +18,15 @@ function AddProjectTask() {
   const [dueDate, setDueDate] = useState('')
   const [priority, setPriority] = useState(0)
   const { project } = useSelector((state) => state.project)
+  const { loading } = useSelector((state) => state.loading)
 
   useEffect(() => {
     dispatch({ type: RESET_ERRORS })
   }, [dispatch])
 
   useEffect(() => {
-    dispatch(getProject(params.id, navigate))
-  }, [dispatch, params.id, navigate])
+    dispatch(getProject(params.id))
+  }, [dispatch, params.id])
 
   const onSubmit = (e) => {
     e.preventDefault()
@@ -51,6 +53,7 @@ function AddProjectTask() {
               Project Name: {project.projectName} -- Project Code:{' '}
               {project.projectIdentifier}
             </p>
+            {errors.message && <Message variant='danger'>{errors.message}</Message>}
             <form onSubmit={onSubmit}>
               <div className='form-group'>
                 <input
@@ -114,7 +117,12 @@ function AddProjectTask() {
                 </select>
               </div>
 
-              <input type='submit' className='btn btn-primary btn-block mt-4' />
+              <button disabled={loading} className='btn btn-primary btn-block mt-4'>
+                {loading && (
+                  <span className='spinner-border spinner-border-sm mr-1'></span>
+                )}
+                Submit
+              </button>
             </form>
           </div>
         </div>
